@@ -8,7 +8,7 @@ prefix = ENV['PREFIX'] || File.dirname(__dir__)
 
 task :fetch do
 	url = "https://github.com/libvips/libvips/releases/download/v#{version}/#{archive_path}"
-	
+
 	unless File.exist? archive_path
 		sh "wget #{url}"
 	end
@@ -23,6 +23,9 @@ end
 task :build do
 	Dir.chdir source_path do
 		sh "./configure --prefix=#{prefix} --exec-prefix=#{prefix}"
+		ENV['GI_TYPELIB_PATH'] = "#{prefix}/lib/girepository-1.0"
+		sh "echo GI_TYPELIB_PATH: $GI_TYPELIB_PATH"
+		sh "make"
 		sh "make install"
 	end
 end
